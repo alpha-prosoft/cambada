@@ -10,6 +10,6 @@
  :aliases
  {:jar {:main-opts ["-m" "cambada.jar"
                     "-a" "all"
-                    "--app-group-id" "luchiniatwork"
+                    "--app-group-id" "com.alpha-prosoft"
                     "--app-artifact-id" "cambada"
                     "--app-version" "1.0.${BUILD_ID}"]}}}
