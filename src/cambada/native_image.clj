@@ -54,14 +54,12 @@
                    "-J-Dclojure.compiler.direct-linking=true"
                    #_"-H:ReflectionConfigurationFiles=reflection.json"
                    "--initialize-at-run-time=java.lang.Math\\$RandomNumberGeneratorHolder"
-                   "--initialize-at-build-time"
                    "-H:Log=registerResource:"
                    "-H:EnableURLProtocols=http,https"
                    "--enable-all-security-services"
                    "-H:+JNI"
                    "--no-fallback"
-                   "--no-server"
-                   "-J-Xmx3g"
+                   "-J-Xmx30g"
                    (format "-H:Name=%s" image-file)]
         all-args (cond-> base-args
                    graalvm-opt (concat (graalvm-opts graalvm-opt))
