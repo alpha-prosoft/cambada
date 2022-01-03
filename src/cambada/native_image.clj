@@ -56,7 +56,6 @@
                    "--initialize-at-run-time=java.lang.Math\\$RandomNumberGeneratorHolder"
                    "-H:Log=registerResource:"
                    "-H:EnableURLProtocols=http,https"
-                   "--enable-all-security-services"
                    "-H:+JNI"
                    "--no-fallback"
                    "-J-Xmx30g"
