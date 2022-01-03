@@ -52,7 +52,6 @@
                    "-H:+ReportExceptionStackTraces"
                    "-J-Dclojure.spec.skip-macros=true"
                    "-J-Dclojure.compiler.direct-linking=true"
-                   #_"-H:ReflectionConfigurationFiles=reflection.json"
                    "--initialize-at-run-time=java.lang.Math\\$RandomNumberGeneratorHolder"
                    "-H:Log=registerResource:"
                    "-H:EnableURLProtocols=http,https"
@@ -64,6 +63,7 @@
                    graalvm-opt (concat (graalvm-opts graalvm-opt))
                    true vec
                    :always (conj main))]
+    (cli/info "Classpath" cp)
     (shell-native-image bin all-args)))
 
 (defn get-native-image-bin [graalvm-home]
