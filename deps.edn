@@ -12,4 +12,4 @@
                     "-a" "all"
                     "--app-group-id" "luchiniatwork"
                     "--app-artifact-id" "cambada"
-                    "--app-version" "1.0.0-SNAPSHOT"]}}}
+                    "--app-version" "1.0.${BUILD_ID}"]}}}
