@@ -2,3 +2,6 @@
 .nrepl-port
 target/
 trace.edn
+.clj-kondo
+.lsp
+.idea

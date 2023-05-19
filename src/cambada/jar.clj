@@ -143,7 +143,6 @@
         dynamic-spec (f project)]
     (copy-to-jar project jar-os acc dynamic-spec)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Filespec
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -168,6 +167,7 @@
 
 (defn- xml-update
   [root tag-path replace-node]
+  (cli/info (format "Updating: %s with %s" tag-path replace-node))
   (let [z (zip/zipper xml/element? :content make-xml-element root)]
     (zip/root
      (loop [[tag & more-tags :as tags] tag-path, parent z, child (zip/down z)]
@@ -195,7 +195,6 @@
                              (xml/event-seq rdr {:include-node? #{:element :characters :comment}}))]
     (first (filter #(instance? Element %) (first roots)))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -222,15 +221,17 @@
       jar-paths)))
 
 (defn ^:private sync-pom
-  [{:keys [deps-map] :as task}]
-  (cli/info "Updating pom.xml") 
-  (gen.pom/sync-pom deps-map (io/file ".")) 
-  (let [pom-file (io/file "." "pom.xml")
-        pom (with-open [rdr (io/reader pom-file)]
-              (-> rdr
-                  parse-xml
-                  (replace-header task)))]
-    (spit pom-file (xml/indent-str pom))))
+  [{:keys [deps-map
+           app-group-id
+           app-artifact-id
+           app-version]
+    :as _task}]
+  (cli/info "Updating pom.xml")
+  (let [dir (io/file ".")]
+    (gen.pom/sync-pom {:basis deps-map
+                       :params  {:target-dir dir
+                                 :lib (symbol app-group-id app-artifact-id)
+                                 :version app-version}})))
 
 (defn apply! [{:keys [deps-map] :as task}]
   (compile/apply! task)

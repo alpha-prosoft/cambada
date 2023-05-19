@@ -8,7 +8,6 @@ ENV PROJECT_NAME cambada
 
 COPY --chown=build:build src src
 COPY --chown=build:build deps.edn deps-orig.edn
-COPY --chown=build:build pom.xml pom.xml
 
 
 
@@ -16,6 +15,7 @@ ARG BUILD_ID
 
 RUN set -e &&\
     cat deps-orig.edn | envsubst > deps.edn &&\
+    cat deps.edn &&\
     clj -M:jar &&\
     ls -la target &&\
     cp pom.xml /dist/release-libs/${PROJECT_NAME}-1.0.${BUILD_ID}.jar.pom.xml &&\
