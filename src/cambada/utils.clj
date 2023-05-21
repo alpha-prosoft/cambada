@@ -113,7 +113,12 @@
 
 (defn get-dep-jars
   [{:keys [deps-map deps] :as task}]
-  (let [resp (shell/sh "clojure" "-Srepro" "-Spath")
-        cp (-> resp :out (string/split #":"))]
+  (let [{:keys [exit
+                out
+                err]} (shell/sh "clojure" "-Spath")
+        cp (-> out (string/split #":"))]
+    (when (> exit 0)
+      (throw (RuntimeException.
+              (format "Exit code: %s, %s" exit, err))))
     (->> cp
          (filter #(let [f (io/file %)] (and (.exists f) (.isFile f)))))))

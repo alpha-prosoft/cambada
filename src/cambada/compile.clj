@@ -32,10 +32,12 @@
 (defn classpath-namespaces
   [{:keys [aot] :as task}]
   (if (= (first aot) 'all)
-    (->> (utils/get-dep-jars task)
-         (filter #(re-find #"\.jar$" %))
-         (mapcat namespacess-in-jar)
-         distinct)
+    (let [jars (utils/get-dep-jars task)]
+      (cli/info (format "Checking jars: %s" (vec jars)))
+      (->> jars
+           (filter #(re-find #"\.jar$" %))
+           (mapcat namespacess-in-jar)
+           distinct))
     '()))
 
 (defn ^:private aot-namespaces
@@ -70,7 +72,7 @@
         (try (compile ns)
              (catch Exception e
                (cli/warn
-                (format "  Unable to compile %s" ns))))))))
+                (format "    Unable to compile %s" ns))))))))
 
 (defn -main [& args]
   (let [{:keys [help] :as task} (cli/args->task args cli-options)]

@@ -179,22 +179,6 @@
            (recur tags parent (zip/right child)))
          (zip/append-child parent replace-node))))))
 
-(defn- replace-header
-  [pom {:keys [app-group-id app-artifact-id app-version] :as task}]
-  (cond-> pom
-    app-group-id    (xml-update [::pom/groupId]
-                                (xml/sexp-as-element [::pom/groupId app-group-id]))
-    app-artifact-id (xml-update [::pom/artifactId]
-                                (xml/sexp-as-element [::pom/artifactId app-artifact-id]))
-    app-version     (xml-update [::pom/version]
-                                (xml/sexp-as-element [::pom/version app-version]))))
-
-(defn- parse-xml
-  [^Reader rdr]
-  (let [roots (tree/seq-tree event/event-element event/event-exit? event/event-node
-                             (xml/event-seq rdr {:include-node? #{:element :characters :comment}}))]
-    (first (filter #(instance? Element %) (first roots)))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
