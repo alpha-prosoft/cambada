@@ -30,11 +30,13 @@
    (JarFile. (io/file jar-name))))
 
 (defn classpath-namespaces
-  []
-  (->> (classpath-entries)
-       (filter #(re-find #"\.jar$" %))
-       (mapcat namespacess-in-jar)
-       distinct))
+  [{:keys [aot] :as task}]
+  (if (= (first aot) 'all)
+    (->> (utils/get-dep-jars task)
+         (filter #(re-find #"\.jar$" %))
+         (mapcat namespacess-in-jar)
+         distinct)
+    '()))
 
 (defn ^:private aot-namespaces
   [{:keys [aot deps-map] :as task}]
@@ -50,7 +52,7 @@
   (clean/apply! task)
   (let [target (utils/compiled-classes-path out)
         aot-ns (aot-namespaces task)
-        other-ns (classpath-namespaces)]
+        other-ns (classpath-namespaces task)]
     (utils/mkdirs target)
     (cli/info "Creating" target)
     (binding [*compile-path* target]

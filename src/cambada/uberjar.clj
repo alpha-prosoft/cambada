@@ -5,7 +5,6 @@
             [cambada.jar-utils :as jar-utils]
             [cambada.utils :as utils]
             [clojure.java.io :as io]
-            [clojure.java.shell :as shell]
             [clojure.string :as string])
   (:import [java.io BufferedOutputStream FileOutputStream ByteArrayInputStream]
            [java.nio.file Files Paths]
@@ -99,12 +98,7 @@
   (with-open [zipfile (ZipFile. dep)]
     (copy-entries zipfile out mergers merged-map)))
 
-(defn ^:private get-dep-jars
-  [{:keys [deps-map deps] :as task}]
-  (let [resp (shell/sh "clojure" "-Srepro" "-Spath")
-        cp (-> resp :out (string/split #":"))]
-    (->> cp
-         (filter #(let [f (io/file %)] (and (.exists f) (.isFile f)))))))
+
 
 (defn ^:private write-components
   "Given a list of jarfiles, writes contents to a stream"
@@ -125,7 +119,7 @@
 (defn apply! [{:keys [deps deps-map out] :as task}]
   (jar/apply! task)
   (let [filename (jar-utils/get-jar-filename task {:kind :uberjar})
-        jars (conj (get-dep-jars task)
+        jars (conj (utils/get-dep-jars task)
                    (jar-utils/get-jar-filename task {:kind :jar}))]
     (cli/info "Creating" filename)
     (with-open [out (-> filename
